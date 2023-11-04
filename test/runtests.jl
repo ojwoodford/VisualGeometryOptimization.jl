@@ -1,6 +1,6 @@
-using VisualGeometryOptimization
 using Test
-
 @testset "VisualGeometryOptimization.jl" begin
-    # Write your tests here.
+    include("camera.jl")
+    include("geometry.jl")
+    include("optimizeba.jl")
 end

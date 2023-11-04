@@ -1,10 +1,28 @@
 name = "VisualGeometryOptimization"
 uuid = "69c13e0b-7fe7-492d-975b-4112821fd6ea"
 authors = ["Oliver Woodford"]
-version = "1.0.0-DEV"
+version = "1.0.0"
+
+[deps]
+ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+IfElse = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+NLLSsolver = "50b5cf9e-bf7a-4e29-8981-4280cbba70cb"
+Static = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+VisualGeometryDatasets = "962a53e2-84f2-440b-bfbc-4e96ec28357f"
 
 [compat]
-julia = "1"
+ForwardDiff = "0.10"
+IfElse = "0.1.1"
+LinearAlgebra = "1.6"
+NLLSsolver = "4.0.0"
+Static = "0.8.7"
+StaticArrays = "1"
+Test = "1.6"
+VisualGeometryDatasets = "0.2.1"
+julia = "1.6"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
