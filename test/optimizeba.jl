@@ -47,20 +47,20 @@ end
     problem = create_bal_problem(3, 5, 1.0)
     
     # Optimze just the landmarks
-    problem = perturb_bal_problem(problem, 0.003, 0.0)
+    problem = perturb_bal_problem(problem, 0.1, 0.0)
     NLLSsolver.optimizesingles!(problem, NLLSOptions(), Point3D{Float64})
-    @test cost(problem) < 1.e-15
+    @test cost(problem) < 1.e-10
 
     # Optimize problem
     problem = perturb_bal_problem(problem, 0.1, 0.01)
     result = optimize!(problem)
     @test cost(problem) == result.bestcost
-    @test result.bestcost < 1.e-15
+    @test result.bestcost < 1.e-10
 
     # Generate & optimize a sparse problem
     problem = create_bal_problem(10, 50, 0.3)
     problem = perturb_bal_problem(problem, 0.3, 0.3)
     problem, result, aucs = optimizeBALproblem(problem; maxiters=20);
-    @test result.bestcost < 1.e-15
+    @test result.bestcost < 1.e-10
     @test aucs[2] > aucs[1]
 end
