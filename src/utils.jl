@@ -18,9 +18,9 @@ function computeauc(problem, threshold, residuals)
         recallfinal = (1.0 - errors[cutoff-1]) / ((errors[cutoff] - errors[cutoff-1]) * length(residuals))
         errors[cutoff] = 1.0
         resize!(errors, cutoff)
-        recall = vcat(range(0.0, recall, cutoff-1), recall + recallfinal)
+        recall = vcat(LinRange(0.0, recall, cutoff-1), recall + recallfinal)
     else
-        recall = vcat(range(0.0, 1.0, length(errors)), 1.0)
+        recall = vcat(LinRange(0.0, 1.0, length(errors)), 1.0)
         errors = vcat(errors, 1.0)
     end
 
