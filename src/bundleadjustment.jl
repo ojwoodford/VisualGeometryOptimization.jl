@@ -21,8 +21,6 @@ NLLSsolver.update(var::BALImage, updatevec, start=1) = BALImage(update(var.pose,
 BALResidual{T} = SimpleError2{2, T, BALImage{T}, Point3D{T}}
 BALResidual(m, v) = BALResidual{eltype(m)}(SVector(m[1], m[2]), SVector(Int(v[1]), Int(v[2])))
 NLLSsolver.generatemeasurement(im::BALImage, X::Point3D) = ideal2image(im.sensor, ideal2distorted(im.lens, -project(im.pose * X)))
-const balrobustifier = HuberKernel(2.)
-NLLSsolver.robustkernel(::BALResidual) = balrobustifier
 
 function NLLSsolver.computeresjac(::StaticInt{3}, residual::BALResidual, im, point)
     # Exploit the parameterization to make the jacobian computation more efficient
@@ -69,8 +67,10 @@ function loadBALproblem(name)::BALProblem
 end
 
 # Function to optimize a BAL problem
-optimizeBALproblem(name::String; kwargs...) = optimizeBALproblem(loadBALproblem(name); kwargs...)
-function optimizeBALproblem(problem::NLLSProblem; kwargs...)
+optimizeBALproblem(name::String, args...; kwargs...) = optimizeBALproblem(loadBALproblem(name), args...; kwargs...)
+function optimizeBALproblem(problem::NLLSProblem, balrobustifier=HuberKernel(2.); kwargs...)
+    # Set the robust kernel
+    @eval NLLSsolver.robustkernel(::BALResidual) = $balrobustifier
     # Compute the starting AUC
     startauc = computeauc(problem, 2.0, problem.costs.data[BALResidual{Float64}])
     println("   Start AUC: ", startauc)
