@@ -1,3 +1,5 @@
+import NLLSsolver: NLLSProblem
+
 # Compute the Area Under Curve for errors, truncated at a given threshold
 computeauc(problem::NLLSProblem, threshold, restype::DataType=first(keys(problem.costs.data))) = computeauc(problem.variables, problem.costs.data[restype], threshold)
 function computeauc(variables::Vector, residuals::Vector, threshold)
