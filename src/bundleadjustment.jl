@@ -67,17 +67,17 @@ function loadBALproblem(name)::BALProblem
 end
 
 # Function to optimize a BAL problem
-optimizeBALproblem(name::String, args...; kwargs...) = optimizeBALproblem(loadBALproblem(name), args...; kwargs...)
-function optimizeBALproblem(problem::NLLSProblem, balrobustifier=HuberKernel(2.); kwargs...)
+optimizeBALproblem(name::String; kwargs...) = optimizeBAproblem(loadBALproblem(name); kwargs...)
+function optimizeBAproblem(problem::NLLSProblem; barobustifier=HuberKernel(2.), unfixed=nothing, projrestype=first(keys(problem.costs.data)), aucthresh=2.0, kwargs...)
     # Set the robust kernel
-    @eval NLLSsolver.robustkernel(::BALResidual) = $balrobustifier
+    @eval NLLSsolver.robustkernel(::$projrestype) = $barobustifier
     # Compute the starting AUC
-    startauc = computeauc(problem, 2.0, problem.costs.data[BALResidual{Float64}])
+    startauc = computeauc(problem, aucthresh, projrestype)
     println("   Start AUC: ", startauc)
     # Optimize the cost
-    result = optimize!(problem, NLLSOptions(; reldcost=1.0e-6, kwargs...), nothing, printoutcallback)
+    result = optimize!(problem, NLLSOptions(; reldcost=1.0e-6, kwargs...), unfixed, printoutcallback)
     # Compute the final AUC
-    endauc = computeauc(problem, 2.0, problem.costs.data[BALResidual{Float64}])
+    endauc = computeauc(problem, aucthresh, projrestype)
     println("   Final AUC: ", endauc)
     # Print out the solver summary
     display(result)

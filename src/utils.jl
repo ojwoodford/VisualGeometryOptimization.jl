@@ -1,5 +1,6 @@
 # Compute the Area Under Curve for errors, truncated at a given threshold
-function computeauc(problem, threshold, residuals)
+computeauc(problem::NLLSProblem, threshold, restype::DataType=first(keys(problem.costs.data))) = computeauc(problem.variables, problem.costs.data[restype], threshold)
+function computeauc(variables::Vector, residuals::Vector, threshold)
     # Compute all the errors
     invthreshold = 1.0 / threshold
     errors = Vector{Float64}(undef, length(residuals)+1)
@@ -7,7 +8,7 @@ function computeauc(problem, threshold, residuals)
     errors[ind] = 0.0
     for res in residuals
         ind += 1
-        errors[ind] = norm(NLLSsolver.computeresidual(res, NLLSsolver.getvars(res, problem.variables)...)) * invthreshold
+        errors[ind] = norm(NLLSsolver.computeresidual(res, NLLSsolver.getvars(res, variables)...)) * invthreshold
     end
 
     # Sort the errors and truncate, compute recall

@@ -60,7 +60,7 @@ end
     # Generate & optimize a sparse problem
     problem = create_bal_problem(10, 50, 0.3)
     problem = perturb_bal_problem(problem, 0.3, 0.3)
-    problem, result, aucs = optimizeBALproblem(problem; maxiters=20);
+    problem, result, aucs = optimizeBAproblem(problem; maxiters=20);
     @test result.bestcost < 1.e-10
     @test aucs[2] > aucs[1]
 end
