@@ -20,7 +20,7 @@ Base.:*(u::RotMatLie{T}, r::AbstractMatrix) where T = SMatrix{3, 3, T, 9}(T(r[1,
                                                                           T(r[1,2], du(u.y)*r[3,2]-du(u.z)*r[2,2]), T(r[2,2], du(u.z)*r[1,2]-du(u.x)*r[3,2]), T(r[3,2], du(u.x)*r[2,2]-du(u.y)*r[1,2]),
                                                                           T(r[1,3], du(u.y)*r[3,3]-du(u.z)*r[2,3]), T(r[2,3], du(u.z)*r[1,3]-du(u.x)*r[3,3]), T(r[3,3], du(u.x)*r[2,3]-du(u.y)*r[1,3]))
 
-function mean0norm1!!(vec::AbstractVector{T}) where T <: ForwardDiff.Dual{V, P, N} where {V, P, N}
+function mean0norm1!!(vec::T) where T <: AbstractVector{FD} where FD <: ForwardDiff.Dual{V, P, N} where {V, P, N}
     # Normalize a vector to have zero mean and unit norm
     # Use an algorithm that only loads the data twice
     x = zero(V)
@@ -35,18 +35,18 @@ function mean0norm1!!(vec::AbstractVector{T}) where T <: ForwardDiff.Dual{V, P, 
     end
     vecmean = x / length(vec)
     vecnorm = @fastmath V(1) / sqrt(max(xx - vecmean * x, V(1e-5)))
-    jacmean = xp ./ length(vec)
-    px = (px - jacmean .* x - p .* vecmean + xp .* vecmean) .* vecnorm
-    if ismutabletype(vec)
+    jacmean = p ./ length(vec)
+    px = (px - p .* vecmean) .* vecnorm
+    if ismutabletype(T)
         @simd for i in eachindex(vec)
             v = (ForwardDiff.value(vec[i]) - vecmean) .* vecnorm
-            p = ForwardDiff.partials(vec[i]) - jacmean - px .* v
-            vec[i] = ForwardDiff.Dual{V, P, N}(v, p)
+            p = (ForwardDiff.partials(vec[i]) - jacmean - px .* v) .* vecnorm
+            vec[i] = FD(v, ForwardDiff.Partials{N, P}((p...,)))
         end
     else
         # Look at ForwardDiff for how to update
-        v = (v - vecmean) .* vecnorm
-        p = p - jacmean - px .* v
+        # v = (v - vecmean) .* vecnorm
+        # p = p - jacmean - px .* v
     end
     return vec
 end
