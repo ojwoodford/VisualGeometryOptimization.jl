@@ -1,17 +1,12 @@
 using NLLSsolver, StaticArrays, LinearAlgebra, Static
 
-image2pixel(halfimsz, x) = x .* halfimsz[1] .+ halfimsz
-pixel2image(halfimsz, x) = (x .- halfimsz) ./ halfimsz[1]
-pixel2image(halfimsz, x, W) = ((x .- halfimsz) ./ halfimsz[1], W .* halfimsz[1])
 ideal2image(camera, x) = x .* focallength(camera) .+ cameracenter(camera)
 image2ideal(camera, x) = (x .- cameracenter(camera)) ./ focallength(camera)
 image2ideal(camera, x, W) = (x .- cameracenter(camera)) ./ focallength(camera), W .* focallength(camera)' 
 
 struct SimpleCamera{T}
     f::ZeroToInfScalar{T}
-    function SimpleCamera{T}(v::T) where T
-        return new{T}(ZeroToInfScalar{T}(v))
-    end
+    SimpleCamera{T}(v::T) where T = new{T}(ZeroToInfScalar{T}(v))
 end
 SimpleCamera(v::T) where T = SimpleCamera{T}(v::T)
 NLLSsolver.nvars(::SimpleCamera) = static(1)

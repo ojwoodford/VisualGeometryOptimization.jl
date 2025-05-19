@@ -16,18 +16,19 @@ function testcamera(cam, x)
 end
 
 @testset "camera.jl" begin
-    halfimsz = SA[640, 480]
+    halfimsz = SA[640.0, 480.0]
     x = SVector(7.0/11., 2.0/3.)
     xi = x .* (0.3 * halfimsz)
+    imscale = ImageScale(halfimsz)
 
     # Test pixel to image transformations
-    y = pixel2image(halfimsz, xi)
-    @test image2pixel(halfimsz, y) ≈ xi
+    y = pixel2image(imscale, xi)
+    @test image2pixel(imscale, y) ≈ xi
 
     # Test warping of the weight matrix
-    y_, W = pixel2image(halfimsz, xi, @SMatrix [1. 0.; 0. 1.])
+    y_, W = pixel2image(imscale, xi, @SMatrix [1. 0.; 0. 1.])
     @test y_ == y
-    @test W ≈ ForwardDiff.jacobian(x -> image2pixel(halfimsz, x), y)
+    @test W ≈ ForwardDiff.jacobian(x -> image2pixel(imscale, x), y)
 
     # Test cameras
     f = SVector(11.0/13., 17.0/13.)
