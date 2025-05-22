@@ -1,13 +1,6 @@
-# using Images, Interpolations
+using Images, ImageTransformations, Interpolations, StaticArrays
 
-# struct Image{numchannels}
-#     data::Vector{UInt8}
-#     width::Int
-#     height::Int
-#     pixelstride::Int
-#     colstridepow2::Int
-# end
-
+# ImageScale is a structure that contains the offset and scale of an image
 struct ImageScale{T<:Real}
     offset::SVector{2, T}
     scale::T
@@ -17,6 +10,10 @@ end
 ImageScale(xoff::T, yoff::T, scale::T) where T = ImageScale(Svector(xoff, yoff), scale)
 ImageScale(offset::SVector{2, T}) where T = ImageScale(offset, offset[1])
 
+# ImageScale is a structure that contains the offset and scale of an image
+halfsize(imscale::ImageScale) = ImageScale(imscale.offset .* 0.5, imscale.scale * 0.5)
+
+# Pixel to scale-invariant image coordinate conversion
 image2pixel(imscale, x) = x .* imscale.scale .+ imscale.offset
 pixel2image(imscale, x) = (x .- imscale.offset) .* imscale.invscale
 pixel2image(imscale, x, W) = ((x .- imscale.offset) .* imscale.invscale, W .* imscale.scale)
@@ -36,12 +33,12 @@ sample(image::Image, imcoords::Vector{SVector{2, T}}) where T <: Real = [sample(
 sample(image::Image, imcoords::SVector{N, SVector{2, T}}) where {N, T <: Real} = SVector(ntuple(i -> sample(image, imcoords[i]), Val(N)))
 
 # Downsample the image by a factor of 2
-halfsize(im::Image) = Image(imresize(im.iminterpolator.itp.coefs, 0.5), ImageScale(im.imscale.offset .* 0.5, im.imscale.scale * 0.5))
+halfsize(im::Image) = Image(imresize(im.iminterpolator.itp.coefs, 0.5), halfsize(im.imscale))
 
 # Structure for storing an image pyramid
 struct ImagePyramid{TI, TS}
     level::Vector{Image{TI, TS}}
-    function ImagePyramid(im::Image{TI, TS})
+    function ImagePyramid(im::Image{TI, TS}) where {TI <: AbstractInterpolation, TS}
         # Compute the number of levels
         nlevels = max(Int(floor(log2(min(im.iminterpolator.width, im.iminterpolator.height)) - 5)), 1)
         # Construct the levels

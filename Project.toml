@@ -6,26 +6,33 @@ version = "1.1.0"
 [deps]
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 IfElse = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
+ImageTransformations = "02fcd773-0e25-5acc-982a-7f6622650795"
+Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
+Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 NLLSsolver = "50b5cf9e-bf7a-4e29-8981-4280cbba70cb"
 Static = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 VisualGeometryDatasets = "962a53e2-84f2-440b-bfbc-4e96ec28357f"
 
 [compat]
 ForwardDiff = "0.10"
 IfElse = "0.1.1"
+ImageTransformations = "0.10.2"
+Images = "0.26.2"
+Interpolations = "0.16.1"
 LinearAlgebra = "1.6"
 NLLSsolver = "4.0.0"
 Static = "0.8.7"
 StaticArrays = "1"
 Test = "1.6"
+TestImages = "1.9.0"
 VisualGeometryDatasets = "0.2.1"
 julia = "1.6"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [targets]
 test = ["Test"]
