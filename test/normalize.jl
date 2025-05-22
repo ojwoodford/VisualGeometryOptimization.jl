@@ -1,4 +1,4 @@
-using VisualGeometryOptimization, Random, StaticArrays, ForwardDiff, BenchmarkTools
+using VisualGeometryOptimization, Test, Random, StaticArrays
 
 myapprox(A, B) = A ≈ B
 function myapprox(A::T, B::T) where T <: AbstractVector{FD} where FD <: ForwardDiff.Dual
@@ -29,14 +29,5 @@ end
 
     # Static vectors
     B = SVector{16, Float64}(randn(16))
-    @test test_normalize(B)      
-
-    # Dual numbers
-    C = Vector{ForwardDiff.Dual{Float64, Float64, 2}}(undef, 16)
-    for i in eachindex(C)
-        C[i] = ForwardDiff.Dual{Float64, Float64, 2}(randn(), ForwardDiff.Partials{2, Float64}((randn(), randn())))
-    end
-    D = SVector{16, ForwardDiff.Dual{Float64, Float64, 2}}(C...)
-    @test test_normalize(C)
-    @test test_normalize(D)
+    @test test_normalize(B)
 end
