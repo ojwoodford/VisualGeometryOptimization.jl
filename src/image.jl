@@ -7,7 +7,7 @@ struct ImageScale{T<:Real}
     invscale::T
     ImageScale(offset::SVector{2, T}, scale::T) where T = new{T}(offset, scale, 1 / scale)
 end
-ImageScale(xoff::T, yoff::T, scale::T) where T = ImageScale(Svector(xoff, yoff), scale)
+ImageScale(xoff::T, yoff::T, scale::T) where T = ImageScale(SVector(xoff, yoff), scale)
 ImageScale(offset::SVector{2, T}) where T = ImageScale(offset, offset[1])
 
 # ImageScale is a structure that contains the offset and scale of an image
@@ -24,7 +24,7 @@ struct Image{TI, TS}
     Image(iminterpolator::TI, imscale::ImageScale{TS}) where {TI <: AbstractInterpolation, TS} = new{TI, TS}(iminterpolator, imscale)
 end
 Image(im::AbstractMatrix, imscale::ImageScale) = Image(ImageTransformations.box_extrapolation(im), imscale)
-Image(im::AbstractMatrix, xoff::T, yoff::T, scale::T) where T = Image(im, ImageScale{T}(xoff, yoff, scale))
+Image(im::AbstractMatrix, xoff, yoff, scale) = Image(im, ImageScale(xoff, yoff, scale))
 
 # Sample: convert to pixel coordinates, then call the interpolator
 sample(iminterpolator::AbstractInterpolation, pixcoords::SVector{2, T}) where T <: Real = iminterpolator(pixcoords[1], pixcoords[2])

@@ -3,7 +3,7 @@ module VisualGeometryOptimization
 # Types
 export Rotation3DR, Rotation3DL, Point3D, Pose3D, EffPose3D, UnitVec3D, UnitPose3D # 3D geometry variable types
 export SimpleCamera, NoDistortionCamera, ExtendedUnifiedCamera, BarrelDistortion, EULensDistortion # Camera sensor & lens variable types
-export ImageScale
+export ImageScale, Image, ImagePyramid # Image variable types
 # Functions
 export rodrigues, invrodrigues, project, epipolarerror, proj2orthonormal # Multi-view geometry helper functions
 export mean0norm1!! # Normalization functions

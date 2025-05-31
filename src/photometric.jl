@@ -2,10 +2,12 @@ using NLLSsolver, StaticArrays
 
 # Patches are structures that contain coordinates and image intensities
 # World patches contain world coordinates, image patches contain image coordinates
-struct StaticWorldPatch{TC, TV, N, DC, DV}
+struct StaticWorldPatchNCC{TC, TV, N, DC, DV}
     coords::StaticMatrix{N, DC, TC, N*DC}
     values::StaticMatrix{N, DV, TV, N*DV}
 end
+
+isnormalized(::StaticWorldPatchNCC) = true
 
 # A PatchResidual links a source patch to a target image
 struct PatchResidual{TP, TI} <: NLLSsolver.AbstractResidual
@@ -15,12 +17,12 @@ end
 
 # Compute a photometric error
 function NLLSsolver.computeresidual(patchres::PatchResidual, warp)
-    # Compute the patch coordinates
+    # Compute the patch image coordinates
     imcoords = transform(warp, patchres.patch[].coords)
     # Sample the image
-    residual = bilinear_sample(patchres.image[], imcoords)
+    residual = sample(patchres.image[], imcoords)
     # Normalize if necessary
-    if IsNormalized(patchres.patch[])
+    if isnormalized(patchres.patch[])
         residual = mean0norm1!!(residual)
     end
     # Subtract the target patch
@@ -32,4 +34,3 @@ function NLLSsolver.computeresidual(patchres::PatchResidual, warp)
     # Return the residual
     return residual
 end
-
