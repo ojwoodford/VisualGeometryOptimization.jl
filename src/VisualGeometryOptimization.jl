@@ -7,7 +7,8 @@ export ImageScale, Image, ImagePyramid # Image variable types
 # Functions
 export rodrigues, invrodrigues, project, epipolarerror, proj2orthonormal # Multi-view geometry helper functions
 export mean0norm1!! # Normalization functions
-export ideal2image, image2ideal, pixel2image, image2pixel, ideal2distorted, distorted2ideal, convertlens # Camera and lens transformations
+export ideal2image, image2ideal, ideal2distorted, distorted2ideal, convertlens # Camera and lens transformations
+export sample, image2pixel, pixel2image, halfsize, baseimage # Image sampling and transformations
 export optimizeBAproblem, optimizeBALproblem, loadBALproblem 
 
 include("utils.jl")

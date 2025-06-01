@@ -1,4 +1,4 @@
-using VisualGeometryOptimization, Test, TestImages, StaticArrays
+using VisualGeometryOptimization, Test, TestImages, StaticArrays, ForwardDiff
 
 @testset "image.jl" begin
     # Test pixel to image transformations
@@ -13,11 +13,12 @@ using VisualGeometryOptimization, Test, TestImages, StaticArrays
     @test W ≈ ForwardDiff.jacobian(x -> image2pixel(imscale, x), y)
 
     # Test image pyramid generation
-    impyr = ImagePyramid(Image(testimage("cameraman.tif"), imscale))
+    impyr = ImagePyramid(Image(testimage("cameraman.tif"), 0.0, 0.0, 1.0))
     @test length(impyr.level) == 5
     @test size(impyr.level[1]) == (512, 512)
     @test size(impyr.level[5]) == (32, 32)
 
     # Test sampling from the image
-    
+    x = SVector(205.0, 267.0)
+    @test sample(impyr.level[1], x) == baseimage(impyr.level[1])[205, 267]
 end
