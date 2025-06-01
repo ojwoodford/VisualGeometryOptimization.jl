@@ -11,5 +11,13 @@ using VisualGeometryOptimization, Test, TestImages, StaticArrays
     y_, W = pixel2image(imscale, x, @SMatrix [1. 0.; 0. 1.])
     @test y_ == y
     @test W ≈ ForwardDiff.jacobian(x -> image2pixel(imscale, x), y)
+
+    # Test image pyramid generation
+    impyr = ImagePyramid(Image(testimage("cameraman.tif"), imscale))
+    @test length(impyr.level) == 5
+    @test size(impyr.level[1]) == (512, 512)
+    @test size(impyr.level[5]) == (32, 32)
+
+    # Test sampling from the image
     
 end

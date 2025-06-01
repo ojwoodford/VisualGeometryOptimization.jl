@@ -18,13 +18,14 @@ image2pixel(imscale, x) = x .* imscale.scale .+ imscale.offset
 pixel2image(imscale, x) = (x .- imscale.offset) .* imscale.invscale
 pixel2image(imscale, x, W) = ((x .- imscale.offset) .* imscale.invscale, W .* imscale.scale)
 
-struct Image{TI, TS}
+struct Image{TI<:AbstractInterpolation, TS}
     iminterpolator::TI
     imscale::ImageScale{TS}
     Image(iminterpolator::TI, imscale::ImageScale{TS}) where {TI <: AbstractInterpolation, TS} = new{TI, TS}(iminterpolator, imscale)
 end
-Image(im::AbstractMatrix, imscale::ImageScale) = Image(ImageTransformations.box_extrapolation(im), imscale)
+Image(im::TI, imscale::ImageScale{TS}) where {TI <: AbstractMatrix, TS} = Image(ImageTransformations.box_extrapolation(im), imscale)
 Image(im::AbstractMatrix, xoff, yoff, scale) = Image(im, ImageScale(xoff, yoff, scale))
+Base.size(im::Image) = Base.size(im.iminterpolator)
 
 # Sample: convert to pixel coordinates, then call the interpolator
 sample(iminterpolator::AbstractInterpolation, pixcoords::SVector{2, T}) where T <: Real = iminterpolator(pixcoords[1], pixcoords[2])
@@ -33,14 +34,14 @@ sample(image::Image, imcoords::Vector{SVector{2, T}}) where T <: Real = [sample(
 sample(image::Image, imcoords::SVector{N, SVector{2, T}}) where {N, T <: Real} = SVector(ntuple(i -> sample(image, imcoords[i]), Val(N)))
 
 # Downsample the image by a factor of 2
-halfsize(im::Image) = Image(imresize(im.iminterpolator.itp.coefs, 0.5), halfsize(im.imscale))
+halfsize(im::Image) = Image(imresize(im.iminterpolator.itp.coefs, ratio=0.5), halfsize(im.imscale))
 
 # Structure for storing an image pyramid
 struct ImagePyramid{TI, TS}
     level::Vector{Image{TI, TS}}
-    function ImagePyramid(im::Image{TI, TS}) where {TI <: AbstractInterpolation, TS}
+    function ImagePyramid(im::Image{TI, TS}) where {TI, TS}
         # Compute the number of levels
-        nlevels = max(Int(floor(log2(min(im.iminterpolator.width, im.iminterpolator.height)) - 5)), 1)
+        nlevels = max(Int(floor(log2(min(size(im)...)) - 4)), 1)
         # Construct the levels
         level = Vector{Image{TI, TS}}(undef, nlevels)
         level[1] = im
