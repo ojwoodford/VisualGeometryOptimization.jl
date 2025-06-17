@@ -6,4 +6,5 @@ using Test
     include("image.jl")
     include("optimizeba.jl")
     include("normalize.jl")
+    include("warp.jl")
 end
