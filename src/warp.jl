@@ -1,9 +1,8 @@
 using StaticArrays, NLLSsolver, Static
 
 abstract type AbstractProjectiveWarp end
-function transform(warp::AbstractProjectiveWarp, coords)
-    return coords
-end
+transform(warp::AbstractProjectiveWarp, coords::SMatrix{2}) = (view(warp.mat, 1:2, 1:2) * coords .+ view(warp.mat, 1:2, 3)) ./ (view(warp.mat, 3, 1:2)' * coords .+ view(warp.mat, 3, 3))
+transform(warp::AbstractProjectiveWarp, coords::SMatrix{3}) = (view(warp.mat, 1:2, :) * coords) ./ (view(warp.mat, 3, :)' * coords)
 
 macro defineprojectivewarp(name, flags)
     ndims = 0
