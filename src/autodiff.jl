@@ -1,4 +1,5 @@
 using ForwardDiff
+value(x) = ForwardDiff.value(x)
 
 # Overloads of some specific functions
 struct RotMatLie{T}
@@ -8,7 +9,7 @@ struct RotMatLie{T}
 end
 
 function rodrigues(x::T, y::T, z::T) where T<:ForwardDiff.Dual
-    @assert x == 0 && y == 0 && z == 0
+    @assert value(x) == 0 && value(y) == 0 && value(z) == 0
     return RotMatLie{T}(x, y, z)
 end
 
