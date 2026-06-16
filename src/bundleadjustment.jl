@@ -68,9 +68,10 @@ end
 
 # Function to optimize a BAL problem
 optimizeBALproblem(name::String; kwargs...) = optimizeBAproblem(loadBALproblem(name); kwargs...)
-function optimizeBAproblem(problem::NLLSProblem; barobustifier=HuberKernel(2.), unfixed=nothing, projrestype=first(keys(problem.costs.data)), aucthresh=2.0, kwargs...)
-    # Set the robust kernel
-    @eval NLLSsolver.robustkernel(::$projrestype) = $barobustifier
+function optimizeBAproblem(problem::NLLSProblem; barobustifier=nothing, unfixed=nothing, projrestype=first(keys(problem.costs.data)), aucthresh=2.0, kwargs...)
+    if !isnothing(barobustifier)
+        Base.depwarn("optimizeBAproblem's keyword argument barobustifier is no longer supported, and is ignored.", :optimizeBAproblem)
+    end
     # Compute the starting AUC
     startauc = computeauc(problem, aucthresh, projrestype)
     println("   Start AUC: ", startauc)

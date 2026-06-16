@@ -1,5 +1,4 @@
 using StaticArrays, LinearAlgebra, NLLSsolver
-import IfElse: ifelse
 
 rodrigues(v) = rodrigues(v[1], v[2], v[3])
 function rodrigues(x::T, y::T, z::T) where T<:Number

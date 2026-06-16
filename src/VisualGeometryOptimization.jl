@@ -11,7 +11,8 @@ export mean0norm1!! # Normalization functions
 export ideal2image, image2ideal, ideal2distorted, distorted2ideal, convertlens # Camera and lens transformations
 export sample, image2pixel, pixel2image, halfsize, baseimage # Image sampling and transformations
 export extract_edgelets # Feature extraction
-export optimizeBAproblem, optimizeBALproblem, loadBALproblem 
+export optimizeBAproblem, optimizeBALproblem, loadBALproblem, makeBALproblem 
+export computeauc # Error metric computation 
 
 include("utils.jl")
 include("autodiff.jl")
