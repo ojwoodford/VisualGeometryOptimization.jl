@@ -1,7 +1,7 @@
 name = "VisualGeometryOptimization"
 uuid = "69c13e0b-7fe7-492d-975b-4112821fd6ea"
 authors = ["Oliver Woodford"]
-version = "1.1.0"
+version = "1.2.0"
 
 [deps]
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
@@ -17,8 +17,8 @@ VisualGeometryDatasets = "962a53e2-84f2-440b-bfbc-4e96ec28357f"
 ForwardDiff = "0.10"
 IfElse = "0.1.1"
 LinearAlgebra = "1.6"
-NLLSsolver = "4.0.0"
-Static = "0.8.7"
+NLLSsolver = "4, 5"
+Static = "0.8.7, 1"
 StaticArrays = "1"
 Test = "1.6"
 VisualGeometryDatasets = "0.2.1"
