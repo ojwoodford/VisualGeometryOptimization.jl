@@ -6,7 +6,7 @@ const inverse = VisualGeometryOptimization.inverse
 
 @testset "geometry.jl" begin
     # Test utility functions
-    O = proj2orthonormal(randn(5, 5))
+    O = proj2rot(randn(5, 5))
     @test O' * O ≈ I
 
     # Test SO(3) conversions
@@ -18,10 +18,7 @@ const inverse = VisualGeometryOptimization.inverse
         @test invrodrigues(rodrigues(v[1], v[2], v[3])) ≈ v
     end
     for i in 1:100
-        R = proj2orthonormal(randn(SMatrix{3, 3, Float64, 9}) * 10)
-        if det(R) < 0
-            R *= diagm(SVector(-1.0, 1.0, 1.0))
-        end
+        R = proj2rot(randn(SMatrix{3, 3, Float64, 9}) * 10)
         @test rodrigues(invrodrigues(R)) ≈ R
     end
 
