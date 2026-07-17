@@ -64,11 +64,10 @@ end
 function proj2rot(M)
     s = svd(M);
     M = s.U * s.V'
-    if det(M) > 0.0
-        return M
-    else
-        return s.U * diagm(vcat(ones(), -1.0)) * s.V';
+    if det(M) < 0.0
+        M = s.U * diagm(convert(typeof(s.S), vcat(ones(length(s.S)-1), -1.0))) * s.V';
     end
+    return M
 end
 
 abstract type AbstractPoint3D end
