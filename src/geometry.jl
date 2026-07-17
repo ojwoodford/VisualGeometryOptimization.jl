@@ -61,9 +61,14 @@ function invrodrigues(R)
     return X * (2 * acos(theta) / sqrt(sqnorm))
 end
 
-function proj2orthonormal(M)
+function proj2rot(M)
     s = svd(M);
-    return s.U * s.V';
+    M = s.U * s.V'
+    if det(M) > 0.0
+        return M
+    else
+        return s.U * diagm(vcat(ones(), -1.0)) * s.V';
+    end
 end
 
 abstract type AbstractPoint3D end
