@@ -1,6 +1,6 @@
 name = "VisualGeometryOptimization"
 uuid = "69c13e0b-7fe7-492d-975b-4112821fd6ea"
-version = "1.2.0"
+version = "1.1.0"
 authors = ["Oliver Woodford"]
 
 [deps]
