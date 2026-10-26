@@ -170,14 +170,3 @@ Base.:*(posea::AbstractPose3D, poseb::AbstractPose3D) = transform(posea, poseb)
 Base.:*(pose::AbstractPose3D, point::AbstractPoint3D) = transform(pose, point)
 Base.:+(pointa::AbstractPoint3D, pointb::AbstractPoint3D) = Point3D(getvec(pointa) + getvec(pointb))
 Base.:-(pointa::AbstractPoint3D, pointb::AbstractPoint3D) = Point3D(getvec(pointa) - getvec(pointb))
-
-function epipolarerror(RX, Tp, x, W=nothing)
-    xe = x - Tp
-    RXp = project(RX) - Tp
-    RXp = SVector(RXp[2], -RXp[1])
-    if !isnothing(W)
-        RXp = W' \ RXp
-        xe = W * xe
-    end
-    return dot(xe, normalize(RXp))
-end

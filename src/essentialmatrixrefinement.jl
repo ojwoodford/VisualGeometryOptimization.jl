@@ -9,15 +9,8 @@ using NLLSsolver, VisualGeometryDatasets, StaticArrays, Static, LinearAlgebra
 # Description of Pairwise Pose: the relative pose between two images, with unit vector translation
 struct PairwisePose{T}
     poseAtoB::UnitPose3D{T}  # Extrinsic parameters (rotation & unit translation)
-    TAp::SVector{2, T} # Projection of translation from A to B
-    TBp::SVector{2, T} # Projection of translation from B to A
     sensorA::SimpleCamera{Float64} # Intrinsic sensor parameters (just a single focal length)
     sensorB::SimpleCamera{Float64} # Intrinsic sensor parameters (just a single focal length)
-    function PairwisePose(pose::UnitPose3D{T}, sensorA::SimpleCamera{Float64}, sensorB::SimpleCamera{Float64}) where T
-        TA = getvec(pose.trans)
-        TB = -(pose.rot.m' * TA)
-        return new{T}(pose, project(TA), project(TB), sensorA, sensorB)
-    end
 end
 # Construct from the relative rotation R & translation t (X_B = R * X_A + t), and the calibration matrices of each image
 PairwisePose(R::AbstractMatrix, t::AbstractVector, fA::Real, fB::Real) = PairwisePose(UnitPose3D(Rotation3DR(SMatrix{3, 3, Float64, 9}(R)), UnitVec3D(SVector{3, Float64}(t))), SimpleCamera(Float64(fA)), SimpleCamera(Float64(fB)))
@@ -37,8 +30,13 @@ Base.eltype(::EpipolarResidualPair) = Float64
 
 function NLLSsolver.computeresidual(res::EpipolarResidualPair, pose::PairwisePose)
     # The error is the point to epipolar-line distance in each image, in pixels. There is one error per image
-    return SVector(epipolarerror(pose.poseAtoB.rot.m  * push(res.xA, 1), pose.TAp, res.xB, focallength(pose.sensorB)), 
-                   epipolarerror(pose.poseAtoB.rot.m' * push(res.xB, 1), pose.TBp, res.xA, focallength(pose.sensorA)))
+    R = pose.poseAtoB.rot.m
+    t = getvec(pose.poseAtoB.trans)
+    xA, xB = push(res.xA, 1), push(res.xB, 1)
+    lB = cross(t, R * xA)  # Epipolar line of xA in image B (= E * xA)
+    lA = R' * cross(xB, t) # Epipolar line of xB in image A (= E' * xB)
+    e = dot(xB, lB)        # Algebraic error xB' * E * xA, the same for both lines
+    return SVector(e * focallength(pose.sensorB) / norm(pop(lB)), e * focallength(pose.sensorA) / norm(pop(lA)))
 end
 
 # Define the type of the problem
@@ -82,14 +80,14 @@ end
 
 # Function to optimize a BAL problem
 optimizeEssentialMatrixproblem(name::String, pair::Int; kwargs...) = optimizeEssentialMatrixproblem(loadEssentialMatrixproblem(name, pair); kwargs...)
-function optimizeEssentialMatrixproblem(problem::NLLSProblem; projrestype=first(keys(problem.costs.data)), aucthresh=2.0, kwargs...)
+function optimizeEssentialMatrixproblem(problem::NLLSProblem; aucthresh=2.0, kwargs...)
     # Compute the starting AUC
-    startauc = computeauc(problem, aucthresh, projrestype)
+    startauc = computeauc(problem, aucthresh, EpipolarResidualPair)
     println("   Start AUC: ", startauc)
     # Optimize the cost
     result = optimize!(problem, NLLSOptions(; reldcost=1.0e-6, kwargs...), nothing, printoutcallback)
     # Compute the final AUC
-    endauc = computeauc(problem, aucthresh, projrestype)
+    endauc = computeauc(problem, aucthresh, EpipolarResidualPair)
     println("   Final AUC: ", endauc)
     # Print out the solver summary
     display(result)
