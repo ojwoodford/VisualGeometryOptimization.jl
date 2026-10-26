@@ -10,7 +10,7 @@ function computeauc(errors::Vector, threshold)
     sort!(errors)
     if errors[end] > 1.0
         cutoff = findfirst(x -> x > 1.0, errors)
-        recall = (cutoff - 1.0) / nerrors
+        recall = (cutoff - 2.0) / nerrors # errors[1] is the added origin, so cutoff - 2 errors are below the threshold
         recallfinal = (1.0 - errors[cutoff-1]) / ((errors[cutoff] - errors[cutoff-1]) * nerrors)
         errors[cutoff] = 1.0
         resize!(errors, cutoff)
