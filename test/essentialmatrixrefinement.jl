@@ -84,9 +84,10 @@ end
     end
     # The errors are finite when the translation is parallel to the image plane (epipoles at infinity)
     @test all(isfinite, computeresidual(res, PairwisePose(R, SVector(1.0, 0.3, 0.0), KA[1,1], KB[1,1])))
-    # The Jacobian is computed without allocating
-    computeresjac(static(1), res, pose)
-    @test (@allocated computeresjac(static(1), res, pose)) == 0
+    # The Jacobian is computed without allocating (measured inside a function, so untyped testset variables don't count)
+    jacallocs(res, pose) = @allocated computeresjac(static(1), res, pose)
+    jacallocs(res, pose)
+    @test jacallocs(res, pose) == 0
 
     # Test optimization from a perturbed pose, with noise-free data
     problem = makeEssentialMatrixproblem(create_twoview_pair(100, R, t, KA, KB))
