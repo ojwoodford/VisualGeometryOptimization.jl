@@ -2,4 +2,4 @@
 using VisualGeometryOptimization, NLLSsolver
 
 NLLSsolver.robustkernel(::VisualGeometryOptimization.EpipolarResidualPair) = GemanMcclure2oKernel(1.)
-optimizeEssentialMatrixproblem("st_peters_square", 1);
+optimizeEssentialMatrixproblem("st_peters_square", 1; iterator=:levenbergmarquardt_dtd);
