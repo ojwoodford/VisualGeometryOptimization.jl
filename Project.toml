@@ -20,19 +20,21 @@ ForwardDiff = "0.10, 1"
 ImageTransformations = "0.10.2"
 Images = "0.26.2"
 Interpolations = "0.16.1"
-LinearAlgebra = "1.6"
+LinearAlgebra = "1.10"
 NLLSsolver = "4, 5"
+Random = "1.10"
 Static = "0.8.7, 1"
 StaticArrays = "1"
 TensorOperations = "5.2.0"
-Test = "1.6"
+Test = "1.10"
 TestImages = "1.9.0"
-VisualGeometryDatasets = "0.2.1"
-julia = "1.6"
+VisualGeometryDatasets = "0.3"
+julia = "1.10"
 
 [extras]
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [targets]
-test = ["Test"]
+test = ["Random", "Test"]

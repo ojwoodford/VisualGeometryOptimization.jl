@@ -156,6 +156,7 @@ EffPose3D(pose::EffPose3D) = pose
 
 # Transformations on abstract types
 project(x::AbstractPoint3D) = SVector(getind(x, 1), getind(x, 2)) ./ getind(x, 3)
+project(x::StaticVector) = pop(x) / x[end]
 inverse(rot::T) where T<:AbstractRotation3D = T(rot.m')
 inverse(var::AbstractPose3D) = Pose3D(Rotation3DR(var.rot.m'), Point3D(var.rot.m' * -getvec(var.trans)))
 transform(rota::T, rotb::AbstractRotation3D) where T<:AbstractRotation3D = T(rota.m * rotb.m)
@@ -169,15 +170,3 @@ Base.:*(posea::AbstractPose3D, poseb::AbstractPose3D) = transform(posea, poseb)
 Base.:*(pose::AbstractPose3D, point::AbstractPoint3D) = transform(pose, point)
 Base.:+(pointa::AbstractPoint3D, pointb::AbstractPoint3D) = Point3D(getvec(pointa) + getvec(pointb))
 Base.:-(pointa::AbstractPoint3D, pointb::AbstractPoint3D) = Point3D(getvec(pointa) - getvec(pointb))
-
-function epipolarerror(RX, T, x, W=nothing)
-    Tp = project(T)
-    xe = x - Tp
-    RXp = project(RX) - Tp
-    RXp = SVector(RXp[2], -RXp[1])
-    if !isnothing(W)
-        RXp = W' \ RXp
-        xe = W * xe
-    end
-    return dot(xe, normalize(RXp))
-end

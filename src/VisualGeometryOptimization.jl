@@ -6,12 +6,13 @@ export SimpleCamera, NoDistortionCamera, ExtendedUnifiedCamera, BarrelDistortion
 export HomographyWarp, AffineWarp, ShiftRotateScaleWarp, TranslationWarp # Warp variable types
 export ImageScale, Image, ImagePyramid # Image variable types
 # Functions
-export transform, rodrigues, invrodrigues, project, epipolarerror, proj2rot # Multi-view geometry helper functions
+export transform, rodrigues, invrodrigues, project, proj2rot # Multi-view geometry helper functions
 export mean0norm1!! # Normalization functions
 export ideal2image, image2ideal, ideal2distorted, distorted2ideal, convertlens # Camera and lens transformations
 export sample, image2pixel, pixel2image, halfsize, baseimage # Image sampling and transformations
 export extract_edgelets # Feature extraction
 export optimizeBAproblem, optimizeBALproblem, loadBALproblem, makeBALproblem 
+export optimizeEssentialMatrixproblem, loadEssentialMatrixproblem, makeEssentialMatrixproblem
 export computeauc # Error metric computation 
 
 include("utils.jl")
@@ -23,4 +24,5 @@ include("image.jl")
 include("features.jl")
 include("normalize.jl")
 include("bundleadjustment.jl")
+include("essentialmatrixrefinement.jl")
 end
