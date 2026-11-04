@@ -7,7 +7,6 @@ Random.seed!(1) # Fix the random test data, so test runs are reproducible
     include("geometry.jl")
     include("image.jl")
     include("optimizeba.jl")
-    include("normalize.jl")
     include("warp.jl")
     include("essentialmatrixrefinement.jl")
 end
