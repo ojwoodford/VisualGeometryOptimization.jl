@@ -12,7 +12,6 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 NLLSsolver = "50b5cf9e-bf7a-4e29-8981-4280cbba70cb"
 Static = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-TensorOperations = "6aa20fa7-93e2-5fca-9bc0-fbd0db3c71a2"
 VisualGeometryDatasets = "962a53e2-84f2-440b-bfbc-4e96ec28357f"
 
 [sources]
@@ -25,11 +24,10 @@ ImageTransformations = "0.10.2"
 Images = "0.26.2"
 Interpolations = "0.16.1"
 LinearAlgebra = "1.10"
-NLLSsolver = "4, 5"
+NLLSsolver = "4, 5, 6"
 Random = "1.10"
 Static = "0.8.7, 1"
 StaticArrays = "1"
-TensorOperations = "5.2.0"
 Test = "1.10"
 TestImages = "1.9.0"
 VisualGeometryDatasets = "0.3"
@@ -41,4 +39,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [targets]
-test = ["Random", "Test"]
+test = ["Random", "Test", "TestImages"]

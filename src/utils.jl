@@ -33,4 +33,4 @@ function computeerrors(residuals, variables)
     return errors
 end
 
-computeauc(problem::NLLSProblem, threshold, restype::DataType=first(keys(problem.costs.data))) = computeauc(computeerrors(problem.costs.data[restype], problem.variables), threshold)
+computeauc(problem::NLLSProblem, threshold, restype=first(keys(problem.costs))) = computeauc(computeerrors(restype isa Integer ? problem.costs.data[restype] : problem.costs[restype], problem.variables), threshold)

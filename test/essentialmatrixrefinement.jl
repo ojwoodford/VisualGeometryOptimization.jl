@@ -54,7 +54,7 @@ end
     problem = makeEssentialMatrixproblem(data)
     @test isa(problem, EssentialMatrixProblem)
     @test length(problem.variables) == 1
-    residuals = problem.costs.data[EpipolarResidualPair]
+    residuals = problem.costs[EpipolarResidualPair]
     @test length(residuals) == 50
     # Points are stored in metric coordinates
     @test residuals[1].xA ≈ project(KA \ push(data.x1[1], 1))
@@ -77,7 +77,7 @@ end
     data = create_twoview_pair(50, R, t, KA, KB; noise=2.0)
     problem = makeEssentialMatrixproblem(data)
     F = inv(KB)' * skew(normalize(t)) * R * inv(KA)
-    for (r, xA, xB) in zip(problem.costs.data[EpipolarResidualPair], data.x1, data.x2)
+    for (r, xA, xB) in zip(problem.costs[EpipolarResidualPair], data.x1, data.x2)
         err = computeresidual(r, pose)
         @test abs(err[1]) ≈ linedistance(F * push(xA, 1), xB)
         @test abs(err[2]) ≈ linedistance(F' * push(xB, 1), xA)

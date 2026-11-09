@@ -19,7 +19,7 @@ mycontamref = ContaminatedGaussianReference(ContaminatedGaussian(1.0, 100.0, 0.1
 
 function optimisekernel!(problem, vars=problem.variables)
     # Compute the squared errors
-    squarederrors = [NLLSsolver.sqnorm(NLLSsolver.computeresidual(res, getvars(res, vars)...)) for res in problem.costs.data[BALResidual{Float64}]]
+    squarederrors = [NLLSsolver.sqnorm(NLLSsolver.computeresidual(res, getvars(res, vars)...)) for res in problem.costs[BALResidual{Float64}]]
     # Optimize the kernel parameters
     mycontamref.kernel = NLLSsolver.optimize(mycontamref.kernel, squarederrors)
     return nothing
